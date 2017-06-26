@@ -1,0 +1,19 @@
+[
+  {
+    "id": "simpleformservice",
+    "description": "simpleformservice desc",
+    "order": 10,
+    "extensions": [
+      {
+        "id": "simpleformservice",
+        "extensionPointId": "org.openmrs.referenceapplication.homepageLink",
+        "type": "link",
+        "order": 20,
+        "label": "Simple Form Service",
+        "url": "simpleformservice/dashboard.page",
+        "icon": "icon-group",
+        "requiredPrivilege": "App: simpleformservice"
+      }
+    ]
+  }
+]
