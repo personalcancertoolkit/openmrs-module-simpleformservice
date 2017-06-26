@@ -12,8 +12,8 @@
 -->
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.openmrs.module.simpleformservice">
-    <class table="simpleformservice_securitylayers" name="SecurityLayer">
+<hibernate-mapping package="org.openmrs.module.patientportaltoolkit">
+    <class table="patientportal_securitylayers" name="SecurityLayer">
         <id name="id" type="int" column="id"  unsaved-value="0">
             <generator class="native" />
         </id>
