@@ -29,7 +29,7 @@ Creating and using `simpleform` is... simple - and highly customizable. Simple f
             - note that this tag requires a "unique_identifier_string", which it will use when finding the openmrs conceptid related to this string
         - all answers should be wrapped with `<simplequestion> ... <simpleanswer>..</simpleanswer> ... </simplequestion>`
             - note that answers need to be wrapped inside of questions
-        - there should be a button which calls the `simple_form_submission_handler.submit_encounter(encounter_id)` method when form is ready to be submitted
+        - there should be a button which calls the `simple_form_submission_handler.submit_encounter(encounter_type)` method when form is ready to be submitted
             - note that the `simple_form_submission_handler` needs to be loaded onto the page first
 2. Developer is finished working. Everything now works.
 
@@ -61,6 +61,40 @@ The concept loader is a bit seperate but essential to simple managment of concep
 ## Examples
 
 
+## Documentation
+
+### Form Tags
+#### `<simpleanswer>` attributes
+- `type`
+    - identifier corresponding to an `answer_handler`, e.g., "boolean"
+- `required`
+    - defaults to "false"
+    - "true" results in `simple_form_submission_handler.submit_encounter` returning `false` if any are w/ this attribute are not filled out
+    
+    
+### Submission Services
+
+#### `simpleformservice.simple_submission`
+
+The purpose of this object is to remove the requirement of creating a custom handler to deal with the `promise` response of the `submission_handler`.
+This wrapper enables the user to call `simple_submission.submit_encounter(encounter_type, on_success_function, on_error_message)` and 
+- trigger `on_success_function` if the promise resolves
+    - or reload the page if  `on_success_function` is undefined
+- alert(on_error_message)  
+    - or alert("Please ensure all questions are answered and answered correctly.") if on_error_message is undefined
+
+#### `simpleformservice.submission_handler` 
+- method `submit_encounter(encounter_type)`
+    - submission logic:
+        - this method finds the `<simpleform>` with `.find("simpleform[encounter_type='encounter_type']")`
+        - it then finds each `<simplequestion>` and `<simpleanswer>` and validates the answers
+            - validation is handled by the `<simpleanswer>`'s `answer_handler[encounter_type]`
+            - if `simpleanswer.attr(required) == true` and any `<simpleanswer>`s are not answered, then `answer_handler[encounter_type]` throws an error
+            - if answer given is invalid, then `answer_handler[encounter_type]` throws an error 
+    - when error is thrown by any of the `answer_handler[encounter_type]`s, `submit_encounter` returns a promise resolving with the error data
+    - if everything occured successfuly, `submit_encounter` returns a promise which resolves with the server response  
+    
+            
 
 ## How to contribute?
  - Improve module's [documentation](https://github.com/personalcancertoolkit/openmrs-module-simpleformservice/wiki) 
