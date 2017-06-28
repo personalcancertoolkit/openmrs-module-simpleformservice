@@ -20,7 +20,7 @@ simpleformservice.simple_submission = {
         var promise_to_attempt_submission = this.submission_handler.submit_encounter(encounter_type);
         var promise_to_respond_to_attempt = promise_to_attempt_submission
             .then((server_response)=>{
-                on_success_function();
+                on_success_function(server_response);
             })
             .catch((errors)=>{
                 alert(on_error_message);

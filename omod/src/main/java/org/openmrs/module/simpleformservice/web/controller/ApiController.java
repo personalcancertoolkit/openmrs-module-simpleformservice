@@ -92,7 +92,6 @@ public class ApiController {
             }
             o.setConcept(conceptObject);
             
-            
             // set value of observation
             if(datatype.equals("DT")){
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
@@ -124,7 +123,6 @@ public class ApiController {
             // add observation to encounter
             encounter.addObs(o); 
         }
-        
         
         // Save new encounter
         //System.out.println("Beginning to save the encounter");
