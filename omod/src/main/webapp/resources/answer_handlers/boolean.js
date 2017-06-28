@@ -8,8 +8,8 @@ simpleformservice.answer_handlers["boolean"] = {
         var value = jq(element).find("input[type='radio']:checked").val();
         if(typeof value === "undefined") value = null;
         if(typeof value === "string") value = value.toLowerCase();
-        if(value == "yes" || value == "true" || value === true) value = true;
-        if(value == "no" || value == "false" || value === false) value = false;
+        if(value == "yes" || value == "true" || value === true) value = "true";
+        if(value == "no" || value == "false" || value === false) value = "false";
         
         // throw error if required and not set
         var concept = element.attr("concept");

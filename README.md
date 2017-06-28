@@ -14,6 +14,7 @@ You create the UI, this does the rest.
 - Create a service that makes creating and submitting forms very simple and fast
 - Cleanly seperate client side logic + views from server side logic
 - Enable maximum freedom for the developer by imposing minimal html structure requirements
+- Automagically take care of managing `concepts` and `encounter_type`s
 
 
 ## Introduction 
@@ -40,23 +41,10 @@ Creating and using `simpleform` is... simple - and highly customizable. Simple f
 2. `simple_form_submission_handler` crawls the form, scrapes all of the user inputs w/ concept ids and creates a json that contains all nessesary data to record the encounter and observations
 3. server side handler receives json through async request from `simple_form_submission_handler`. handler records all data into database
 
-### Concept Loader
-The concept loader is a bit seperate but essential to simple managment of concepts and encounter types. The concept loader comes with an api to which a json object consisting of a structure resembling the following example is given. Note, it will safely ignore any additional keys you pass with the concept objects and only requires that `unique_identifier` and  `datatype` are defined. 
-    - `unique_identifier` is a customizable string that is unique among all concepts you use in your applications
-    - `datatyle` is an HL7 identifier for datatypes. e.g., 'BIT', 'DT', 'ST', etc.
-    ```
-    [
-        {
-            "unique_identifier" : "...",
-            "datatype" : "..."
-        },
-        ...
-        {
-            "unique_identifier" : "...",
-            "datatype" : "..."
-        }
-    ]
-    ```
+### Concept and Encounter Type Loading
+An important aspect to note is "automagical" handling of the `concept`s and `encounter_type`s defined in `<simpleform>`s. This module creates any concepts or encounter_types that are not already defined in the database. Using the `unique_identifier_string` found in `concept=<unique_identifier_string>`, `encounter_type=<unique_identifier_string>`, this module returns an `encounter type` or `concept` where that `unique_identifier_string` matches the `Name` of the `concept` or `encounter_type`. if it can find one in the database, it will return it; If not, it will create a new `encounter_type`. 
+
+The forgiving nature design needs to be taken into consideration.
 
 ## Examples
 

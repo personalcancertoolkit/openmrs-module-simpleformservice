@@ -72,7 +72,13 @@ simpleformservice.submission_handler = {
                 console.log(data);
                 return new Promise((resolve, reject)=>{
                     // send the data to the server and resolve on the response
-                    resolve("Success!");  
+                    jq.post("/openmrs/ws/simpleformservice/api/save_encounter", {
+                        json : JSON.stringify(data),
+                    }, function (response){
+                        console.log("Request Responded");
+                        console.log(response)
+                        resolve("Success!");  
+                    });
                 })
             })
             .catch((err)=>{// this catch could be placed earlier, but then we would not be able to return it to user.
