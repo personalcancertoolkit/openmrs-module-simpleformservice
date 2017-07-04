@@ -2,6 +2,8 @@
 var simpleformservice = {
     resource_root : null,
     submission_handler : null,
+    simple_submission : null,
+    encounter_retreiver : null,
     answer_handlers : null,
     manager_of_answer_handlers : null,
     promise : {

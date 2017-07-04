@@ -26,5 +26,4 @@ simpleformservice.simple_submission = {
                 alert(on_error_message);
             })
     }
-    
 }

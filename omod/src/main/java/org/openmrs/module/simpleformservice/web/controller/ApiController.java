@@ -46,11 +46,90 @@ import java.util.*;
 import java.text.ParseException;
 import org.json.*;
 
+import org.openmrs.parameter.EncounterSearchCriteria;
+import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
+
 /**
  * Created by Maurya on 08/06/2015.
  */
 @Controller
 public class ApiController {
+    
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Get Encounters
+    ////////////////////////////////////////////////////////////////////////////
+    @RequestMapping( value = "/simpleformservice/api/get_encounters/{encounter_type}")
+    @ResponseBody
+    public Object getAllRemindersforPatient(@PathVariable( "encounter_type" ) String encounter_type)
+    {
+        // define the patient as the current user
+        Person person = Context.getAuthenticatedUser().getPerson();		
+        Patient patient = Context.getPatientService().getPatient(person.getId());
+        
+        // get this encounter_type object from identifier
+        EncounterType encounterType = findOrCreateEncounterTypeByIdentifier(encounter_type);
+        
+        // get encounters by encounter_type
+        List<EncounterType> encounterTypes = Arrays.asList(encounterType);
+        EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder()
+				.setPatient(patient)
+				.setEncounterTypes(encounterTypes)
+				.createEncounterSearchCriteria();
+        EncounterService encounterService = Context.getEncounterService();
+        List<Encounter> encounters = encounterService.getEncounters(encounterSearchCriteria);
+        
+        // for each encounter, create a "map" containing encounter_id, encounter_datetime, and obs (conceptid, datatype, + value) of each observation
+        List<Object> encounters_data = new ArrayList<Object>();
+        for (Encounter this_encounter : encounters) {
+            Map<String, Object> an_encounter_data = new HashMap<String, Object>();
+
+            System.out.println("For another encounter : " + this_encounter);
+            an_encounter_data.put("encounter_datetime", this_encounter.getEncounterDatetime());
+            
+            List<Obs> these_observations = new ArrayList<Obs>(this_encounter.getObs());;
+            int listCount = these_observations.size();
+            System.out.println("observations for this encounter = " + listCount);
+            
+            
+            List<Object> thses_observations_data = new ArrayList<Object>();
+            for(Obs this_observation : these_observations){
+                Map<String, String> an_observation_data = new HashMap<String, String>();
+                
+                // get the concept for this observation
+                Concept this_concept = this_observation.getConcept(); 
+                
+                // set identifier of concept of observation
+                String concept_identifier = this_concept.getName().getName();// note, in current implementation we use the name as the identification string
+                an_observation_data.put("concept", concept_identifier);
+                
+                // set HL7 abbreviation of datatype of observation
+                String concept_datatype = this_concept.getDatatype().getHl7Abbreviation();
+                an_observation_data.put("datatype", concept_datatype);
+                
+                // set value of observation
+                //    allow convinience method to convert data from original datatype to string
+                Locale locale = Context.getLocale();
+                an_observation_data.put("value", this_observation.getValueAsString(locale));
+                
+                thses_observations_data.add(new HashMap<String,String>(an_observation_data));
+            }
+            an_encounter_data.put("observations", thses_observations_data);
+            encounters_data.add(new HashMap<String,Object>(an_encounter_data));
+        }        
+        
+        
+        System.out.println(encounters_data);
+        return encounters_data;
+    }
+    
+    
+    
+    //////////////////////////////////////////////////////////////////////////
+    // Save EncounterType + Observations
+    //////////////////////////////////////////////////////////////////////////
     @RequestMapping(value = "/simpleformservice/api/save_encounter", method = RequestMethod.POST)
     @ResponseBody
     public Object saveEncounter(@RequestParam String json)
@@ -217,4 +296,5 @@ public class ApiController {
         //System.out.println("Successfully returned EncounterType with the desired encounter_type");
         return thisEncounterType;
     }
+    
 }

@@ -76,8 +76,8 @@ simpleformservice.submission_handler = {
                         json : JSON.stringify(data),
                     }, function (response){
                         console.log("Request Responded");
-                        console.log(response)
-                        resolve("Success!");  
+                        console.log(response);
+                        resolve(response);  
                     });
                 })
             })
