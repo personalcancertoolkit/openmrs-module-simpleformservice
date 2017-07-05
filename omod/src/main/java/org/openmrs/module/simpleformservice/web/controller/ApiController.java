@@ -49,6 +49,7 @@ import org.json.*;
 import org.openmrs.parameter.EncounterSearchCriteria;
 import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 
+
 /**
  * Created by Maurya on 08/06/2015.
  */
@@ -87,8 +88,14 @@ public class ApiController {
             Map<String, Object> an_encounter_data = new HashMap<String, Object>();
 
             System.out.println("For another encounter : " + this_encounter);
-            an_encounter_data.put("encounter_datetime", this_encounter.getEncounterDatetime());
             
+            // get date in formated string 
+            Date encounterDateTime = this_encounter.getEncounterDatetime();
+            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+            String formattedEncounterDate = formatter.format(encounterDateTime);
+            an_encounter_data.put("encounter_datetime", formattedEncounterDate);
+            
+            // get observations for encounter
             List<Obs> these_observations = new ArrayList<Obs>(this_encounter.getObs());;
             int listCount = these_observations.size();
             System.out.println("observations for this encounter = " + listCount);
