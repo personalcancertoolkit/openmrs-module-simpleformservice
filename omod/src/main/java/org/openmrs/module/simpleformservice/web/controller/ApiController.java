@@ -86,14 +86,19 @@ public class ApiController {
         List<Object> encounters_data = new ArrayList<Object>();
         for (Encounter this_encounter : encounters) {
             Map<String, Object> an_encounter_data = new HashMap<String, Object>();
-
             System.out.println("For another encounter : " + this_encounter);
             
-            // get date in formated string 
+            // get encounter id 
+            an_encounter_data.put("id", this_encounter.getEncounterId());
+            
+            // get encounter datetime
             Date encounterDateTime = this_encounter.getEncounterDatetime();
+            an_encounter_data.put("datetime", encounterDateTime);
+            
+            // get date in formated string 
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
             String formattedEncounterDate = formatter.format(encounterDateTime);
-            an_encounter_data.put("encounter_datetime", formattedEncounterDate);
+            an_encounter_data.put("datetime_formatted", formattedEncounterDate);
             
             // get observations for encounter
             List<Obs> these_observations = new ArrayList<Obs>(this_encounter.getObs());;
