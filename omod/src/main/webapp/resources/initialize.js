@@ -19,6 +19,7 @@ simpleformservice.resource_root = "/openmrs/ms/uiframework/resource/simpleformse
 // set answer handler locations
 simpleformservice.answer_handlers = { // note, the relative paths get replaced with the actual objects when they are initialized.
     "boolean" : "boolean.js",  
+    "multiple_choice" : "multiple_choice.js",
 }
 
 // promise to load manager of answer handlers

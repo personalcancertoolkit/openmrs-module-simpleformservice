@@ -163,6 +163,7 @@ public class ApiController {
         encounter.setDateCreated(date);
         encounter.setEncounterDatetime(date);
         encounter.setEncounterType(encounterType);
+        //System.out.println(encounter);
         
         // Append all new observations to encounter
         JSONArray observations = data.getJSONArray("observations");
@@ -184,42 +185,34 @@ public class ApiController {
             o.setConcept(conceptObject);
             
             // set value of observation
-            if(datatype.equals("DT")){
-                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-                Date parsedDate = new Date();
-                try {
-                    parsedDate = formatter.parse(value);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    return "ERROR: Date could not be parsed properly. Are you sure the format is `MM/dd/yyyy`?";
-                }
-                o.setValueDate(parsedDate);
-            }
-            if(datatype.equals("NM")){
-                o.setValueNumeric(Double.valueOf(value));
-            }
-            if(datatype.equals("BIT")){
-                Boolean booleanValue = null;
-                if(value.equals("true")){
-                    booleanValue = true;
-                } else if (value.equals("false")){
-                    booleanValue = false;
-                }  else {
-                    System.out.println("ERROR - Boolean value was invalid. Received " + value);
-                    return "ERROR: boolean value was not properly defined. Not true or false, instead = " + value; // sends this data to client
-                }
-                o.setValueBoolean(booleanValue);
+            try {
+                o.setValueAsString(value);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return "ERROR: Value of observation could not be set properly.";
             }
             
+            //System.out.println(o);
+            //System.out.println("Datatype : " + datatype);
+            Locale locale = Context.getLocale();
+            //System.out.println("Value : " + o.getValueAsString(locale));
+            
             // add observation to encounter
+            //System.out.println("Adding the above observation to encounter");
             encounter.addObs(o); 
         }
         
         // Save new encounter
         //System.out.println("Beginning to save the encounter");
         EncounterService encounterService = Context.getEncounterService();
-        encounter = encounterService.saveEncounter(encounter);
-        System.out.println("Encounter saved successfully.");
+
+        try {
+            encounter = encounterService.saveEncounter(encounter);
+            System.out.println("Encounter saved successfully.");
+        } catch (APIException e) {
+            e.printStackTrace();
+            return "ERROR: Encounter was not saved properly";
+        }
         
         return "SCS";
     }
@@ -232,6 +225,7 @@ public class ApiController {
             case "DT" : return "Date";
             case "NM" : return "Numeric";
             case "BIT" : return "Boolean";
+            case "ST" : return "Text";
         }
         return null; // return false if none found
     }

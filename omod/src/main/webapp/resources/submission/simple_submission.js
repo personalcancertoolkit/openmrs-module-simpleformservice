@@ -23,6 +23,7 @@ simpleformservice.simple_submission = {
                 on_success_function(server_response);
             })
             .catch((errors)=>{
+                console.log(errors);
                 alert(on_error_message);
             })
     }
