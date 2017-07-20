@@ -86,7 +86,7 @@ public class ApiController {
         List<Object> encounters_data = new ArrayList<Object>();
         for (Encounter this_encounter : encounters) {
             Map<String, Object> an_encounter_data = new HashMap<String, Object>();
-            System.out.println("For another encounter : " + this_encounter);
+            //System.out.println("For another encounter : " + this_encounter);
             
             // get encounter id 
             an_encounter_data.put("id", this_encounter.getEncounterId());
@@ -133,7 +133,7 @@ public class ApiController {
         }        
         
         
-        System.out.println(encounters_data);
+        //System.out.println(encounters_data);
         return encounters_data;
     }
     
@@ -180,7 +180,9 @@ public class ApiController {
             System.out.println("  -  " + concept);
             Concept conceptObject = findOrCreateConceptForConceptIdentifier(concept, datatype);
             if(conceptObject == null){
-                return "ERROR: Concept Datatype Not Defined"; // sends this data to client
+                String errorString = "Concept datatype not defined OR Concept was already created with different datatype";
+                System.out.println("   `-> (x) error retreiving concept: " + errorString);
+                return "ERROR: " + errorString; // sends this data to client
             }
             o.setConcept(conceptObject);
             
@@ -189,7 +191,9 @@ public class ApiController {
                 o.setValueAsString(value);
             } catch (ParseException e) {
                 e.printStackTrace();
-                return "ERROR: Value of observation could not be set properly.";
+                String errorString = "Value of observation could not be set properly";
+                System.out.println("   `-> (x) error setting value of concept: " + errorString);
+                return "ERROR: " + errorString; // sends this data to client
             }
             
             //System.out.println(o);
@@ -272,6 +276,7 @@ public class ApiController {
                 Context.removeProxyPrivilege(PrivilegeConstants.GET_CONCEPT_ATTRIBUTE_TYPES);
             }
         }
+        if(!(thisConcept.getDatatype().getHl7Abbreviation().equals(datatype_abbreviation))) return null; // user has changed datatype of concept after creating it, they need to delete from database old one.
         
         //System.out.println("Successfully returned concept with the desired identifier ");
         return thisConcept;
