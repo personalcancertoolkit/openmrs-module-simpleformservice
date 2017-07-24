@@ -10,6 +10,7 @@
 package org.openmrs.module.simpleformservice.web.controller;
 
 import org.openmrs.Person;
+import org.openmrs.Patient;
 import org.openmrs.api.PersonService;
 
 import org.openmrs.api.APIException;
@@ -47,7 +48,9 @@ public class PermissionApiController {
     public Object createDataAccessPermission(@RequestParam String json)
     {
         // the current user is giving access to another user. Define the current user as the accessToPerson.
+        //      Bug #10, To get person reliably, get patient first and then cast to person
         Person accessToPerson = Context.getAuthenticatedUser().getPerson();		
+        
         
         
         //////////////////////
@@ -94,8 +97,18 @@ public class PermissionApiController {
             System.out.println(error);
             return error;
         };
-        System.out.println("Granted to person found successfully.");
-        System.out.println(grantedToPerson);
+        //System.out.println("Granted to person found successfully.");
+        //System.out.println(grantedToPerson);
+        
+        
+        ///////////////////////
+        // Ensure grantedToPerson and accessToPerson are different
+        ///////////////////////
+        if(grantedToPerson.getUuid().equals(accessToPerson.getUuid())){
+            String error = "ERROR: GrantedToPerson and AccessToPerson (current user) are the same user";  
+            System.out.println(error);
+            return error;
+        }
         
         
         //////////////////////

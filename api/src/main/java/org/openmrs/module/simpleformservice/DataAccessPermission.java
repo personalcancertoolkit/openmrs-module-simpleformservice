@@ -26,8 +26,8 @@ public class DataAccessPermission {
     // constructor
     public DataAccessPermission(){}
     public DataAccessPermission(Person accessToPerson, Person grantedToPerson, String encounterType, String permissionType){
-        this.grantedToPerson = grantedToPerson;
         this.accessToPerson = accessToPerson;
+        this.grantedToPerson = grantedToPerson;
         this.encounterType = encounterType;
         this.permissionType = permissionType;
     }
@@ -50,7 +50,7 @@ public class DataAccessPermission {
 
     // accessToPerson
     public Person getAccessToPerson() {
-        return grantedToPerson;
+        return accessToPerson;
     }
     public void setAccessToPerson(Person accessToPerson) {
         this.accessToPerson = accessToPerson;
