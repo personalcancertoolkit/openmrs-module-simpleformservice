@@ -1,12 +1,19 @@
 // define structure simpleformservice
 var simpleformservice = {
     resource_root : null,
+    
+    // permissions
+    simple_permission_manager : null,
+    
+    // data
     submission_handler : null,
     simple_submission : null,
     encounter_retreiver : null,
     answer_handlers : null,
     manager_of_answer_handlers : null,
+    
     promise : {
+        simple_permission_manager : null,    // used to promise simple_permission_manager loaded
         submission_handler : null,           // used to promise submission_handler loaded
         manager_of_answer_handlers : null,   // "" manager_of_answer_handlers ""
         simple_submission : null,            // "" simple_submission ""
@@ -21,6 +28,19 @@ simpleformservice.answer_handlers = { // note, the relative paths get replaced w
     "boolean" : "boolean.js",  
     "multiple_choice" : "multiple_choice.js",
 }
+
+
+// promise to load simple_permission_manager 
+simpleformservice.promise.simple_permission_manager = new Promise((resolve, reject)=>{
+    var script_url = simpleformservice.resource_root + "/permissions/simple_permission_manager.js";
+    var script = document.createElement('script');
+    script.setAttribute("src", script_url);
+    script.onload = function(){
+        resolve("success");
+    };
+    document.getElementsByTagName('head')[0].appendChild(script);
+})
+
 
 // promise to load manager of answer handlers
 simpleformservice.promise.manager_of_answer_handlers = new Promise((resolve, reject)=>{

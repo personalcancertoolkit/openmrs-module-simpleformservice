@@ -18,9 +18,6 @@ import org.openmrs.module.simpleformservice.api.db.SecurityLayerDAO;
 
 import java.util.List;
 
-/**
- * Created by maurya on 3/21/16.
- */
 public class SecurityLayerServiceImpl extends BaseOpenmrsService implements SecurityLayerService {
     protected SecurityLayerDAO dao;
 

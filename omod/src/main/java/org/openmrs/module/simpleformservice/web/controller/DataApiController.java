@@ -50,14 +50,8 @@ import org.openmrs.parameter.EncounterSearchCriteria;
 import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 
 
-/**
- * Created by Maurya on 08/06/2015.
- */
 @Controller
-public class ApiController {
-    
-    
-    
+public class DataApiController {
     
     ////////////////////////////////////////////////////////////////////////////
     // Get Encounters

@@ -70,6 +70,7 @@
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
 		SecurityLayer.hbm.xml
+		DataAccessPermission.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

@@ -1,0 +1,1 @@
+CREATE TABLE `openmrs`.`simpleformservice_data_access_permissions` ( `id` INT NOT NULL AUTO_INCREMENT , `granted_to_person_id` INT NOT NULL , `access_to_person_id` INT NOT NULL , `encounter_type` VARCHAR(255) NOT NULL , `permission_type` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
