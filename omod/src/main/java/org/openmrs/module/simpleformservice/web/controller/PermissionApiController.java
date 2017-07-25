@@ -37,6 +37,51 @@ import org.json.*;
 @Controller
 public class PermissionApiController {
     
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Get dataAccessPermissions for current user as grantedToPerson
+    ////////////////////////////////////////////////////////////////////////////
+    @RequestMapping( value = "/simpleformservice/api/retrieve_data_access/")
+    @ResponseBody
+    public Object getAllRemindersforPatient()
+    {
+        // define the patient as the current user
+        Person person = Context.getAuthenticatedUser().getPerson();		
+        
+        // get all permissions with this person as the grantedToPerson
+        List<DataAccessPermission> dataAccessPermissions = Context.getService(DataAccessPermissionService.class).getDataAccessPermissionByGrantedToPerson(person);
+        System.out.println(dataAccessPermissions);
+        
+        // for each permission, create a "map" containing  accessToPerson, accessToPersonName, encounter_type, and permission_type,
+        List<Object> access_data = new ArrayList<Object>();
+        if(dataAccessPermissions != null){
+            for (DataAccessPermission this_permission : dataAccessPermissions) {
+                Map<String, Object> an_access_data = new HashMap<String, Object>();
+
+                // set accessToPerson
+                an_access_data.put("access_to_person_id", this_permission.getAccessToPerson().getPersonId());
+
+                // set accessToPersonName.getGivenName()
+                String full_name = this_permission.getAccessToPerson().getGivenName() + " " + this_permission.getAccessToPerson().getFamilyName();
+	            an_access_data.put("access_to_person_name", full_name);
+
+                // set encounter_type
+                an_access_data.put("encounter_type", this_permission.getEncounterType());
+
+                // set permission_type
+                an_access_data.put("permission_type", this_permission.getPermissionType());
+
+                access_data.add(new HashMap<String,Object>(an_access_data));
+            }        
+        }
+        
+        //System.out.println(encounters_data);
+        return access_data;
+    }
+    
+    
+    
     //////////////////////////////////////////////////////////////////////////
     // Create dataAccessPermission
     //////////////////////////////////////////////////////////////////////////

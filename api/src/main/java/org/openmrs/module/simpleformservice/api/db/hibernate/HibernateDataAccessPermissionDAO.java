@@ -64,6 +64,7 @@ public class HibernateDataAccessPermissionDAO implements DataAccessPermissionDAO
     @Override
     public List<DataAccessPermission> getDataAccessPermissionByGrantedToPerson(Person grantedToPerson) {
         final Criteria crit = this.sessionFactory.getCurrentSession().createCriteria(DataAccessPermission.class);
+        System.out.println("Current person = " +grantedToPerson);
         crit.add(Restrictions.eq("grantedToPerson", grantedToPerson));
         crit.addOrder(Order.asc("id"));
         final List<DataAccessPermission> list = crit.list();

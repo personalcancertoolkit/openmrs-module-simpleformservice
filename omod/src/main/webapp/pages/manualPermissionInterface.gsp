@@ -9,6 +9,9 @@ ${ ui.includeFragment("simpleformservice", "header") }
             permission_type : document.getElementById("permission_type").value,
         })
     }
+    function retreive(){
+        return simpleformservice.simple_permission_manager.retreive_data_access();
+    }
 </script>
 
 <div>
@@ -17,7 +20,7 @@ ${ ui.includeFragment("simpleformservice", "header") }
     </div>
     <br>
     <div style = 'font-size:13px;'>
-        intended to be used for testing operations - theres a reason its not pretty
+        intended to be used for testing operations - theres a reason its not pretty. Open console for response.
     </div>
 </div>
 <div style = 'height:50px;'></div>
@@ -40,6 +43,14 @@ ${ ui.includeFragment("simpleformservice", "header") }
     </div>
     <br>
     <button onclick = 'submit()'> create permission</button>
+</div>
+<div style = 'height:35px;'></div>
+<div>
+    <div style='font-size:21px;'>
+        Retreive GrantedToPermissions 
+    </div>
+    <br>
+    <button onclick = 'retreive()'> retreive permissions </button>
 </div>
 
 <!-- test data -->

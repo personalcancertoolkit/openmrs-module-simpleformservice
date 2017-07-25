@@ -24,7 +24,7 @@ public interface DataAccessPermissionService extends OpenmrsService {
     DataAccessPermission getDataAccessPermission(String uuid);
     
     @Transactional(readOnly = true)
-    List<DataAccessPermission> getDataAccessPermissionByGrantedToPerson(Person grantedToPerson, Boolean appendAccessToPersonNames);
+    List<DataAccessPermission> getDataAccessPermissionByGrantedToPerson(Person grantedToPerson);
 
     @Transactional(readOnly = false)
     DataAccessPermission saveDataAccessPermission(DataAccessPermission dataAccessPermission);

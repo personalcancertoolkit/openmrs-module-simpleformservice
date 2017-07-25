@@ -33,7 +33,7 @@ public class DataAccessPermissionServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
-    public List<DataAccessPermission> getDataAccessPermissionByGrantedToPerson(Person grantedToPerson, Boolean appendAccessToPersonNames) {
+    public List<DataAccessPermission> getDataAccessPermissionByGrantedToPerson(Person grantedToPerson) {
         return dao.getDataAccessPermissionByGrantedToPerson(grantedToPerson);
     }
 

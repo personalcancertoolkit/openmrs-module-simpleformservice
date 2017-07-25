@@ -58,5 +58,30 @@ simpleformservice.simple_permission_manager = {
                 console.log(errors);
                 alert(on_error_message);
             })
-    }
+    },
+    
+    retreive_data_access : function(){
+        if(typeof on_success_function === "undefined") on_success_function = function(){location.reload()}
+        if(typeof on_error_message === "undefined") on_error_message = "Sorry, there has been some retreiving your permissions.";
+        
+        var promise_to_attempt = new Promise((resolve, reject)=>{
+                console.log("Grabbing data from server");
+                return new Promise((resolve, reject)=>{
+                    // send the data to the server and resolve on the response
+                    jq.get("/openmrs/ws/simpleformservice/api/retrieve_data_access/", {}, function (response){
+                        console.log("Request Responded");
+                        console.log(response);
+                        resolve(response);  
+                    });
+                })
+            });
+        var promise_to_respond_to_attempt = promise_to_attempt
+            .then((server_response)=>{
+                on_success_function(server_response);
+            })
+            .catch((errors)=>{
+                console.log(errors);
+                alert(on_error_message);
+            })
+    },
 }
