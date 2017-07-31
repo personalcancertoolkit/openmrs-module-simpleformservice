@@ -234,6 +234,7 @@ public class DataApiController {
         
         // Find or Create the encounter by encounter_type_identifier === EncounterType.Name
         Concept thisConcept = new Concept();
+        System.out.println("Getting concept by identifier : " + concept_identifier);
         thisConcept = conceptService.getConceptByName(concept_identifier);
         if(thisConcept == null) {
             //System.out.println("Concept does not exist, creating a concept where name  = " + concept_identifier + "."); 
@@ -270,7 +271,10 @@ public class DataApiController {
                 Context.removeProxyPrivilege(PrivilegeConstants.GET_CONCEPT_ATTRIBUTE_TYPES);
             }
         }
-        if(!(thisConcept.getDatatype().getHl7Abbreviation().equals(datatype_abbreviation))) return null; // user has changed datatype of concept after creating it, they need to delete from database old one.
+        if(!(thisConcept.getDatatype().getHl7Abbreviation().equals(datatype_abbreviation))){
+            System.out.println("Datatype of this concept does not match up between the database ( " + thisConcept.getDatatype().getHl7Abbreviation() + " ) and the datatype requested ( " + datatype_abbreviation + " ) ");
+            return null; // user has changed datatype of concept after creating it, they need to delete from database old one.  
+        } 
         
         //System.out.println("Successfully returned concept with the desired identifier ");
         return thisConcept;
@@ -284,9 +288,9 @@ public class DataApiController {
         EncounterType thisEncounterType = new EncounterType();
         thisEncounterType = encounterService.getEncounterType(encounter_type_identifier);
         if(thisEncounterType == null) {
-            //System.out.println("EncounterType does not exist, creating an encounter type for `Name` = " + encounter_type_identifier + "."); 
+            System.out.println("EncounterType does not exist, creating an encounter type for `Name` = " + encounter_type_identifier + "."); 
             String name = encounter_type_identifier;
-            String description = "An encountertype created automagically by simpleformservice.";
+            String description = "   `-> An encountertype created automagically by simpleformservice.";
             thisEncounterType = new EncounterType(name, description);
             try {
                 Context.addProxyPrivilege(PrivilegeConstants.MANAGE_ENCOUNTER_TYPES);
@@ -298,7 +302,7 @@ public class DataApiController {
             }
         }
         
-        //System.out.println("Successfully returned EncounterType with the desired encounter_type");
+        System.out.println("Successfully returned EncounterType with the desired encounter_type");
         return thisEncounterType;
     }
     
