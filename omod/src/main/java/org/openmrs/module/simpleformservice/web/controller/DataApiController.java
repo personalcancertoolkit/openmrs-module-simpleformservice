@@ -26,6 +26,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 
 import org.openmrs.api.APIException;
+import org.openmrs.module.simpleformservice.api.DataAccessPermissionService;
 
 import org.openmrs.util.PrivilegeConstants;
     
@@ -56,13 +57,34 @@ public class DataApiController {
     ////////////////////////////////////////////////////////////////////////////
     // Get Encounters
     ////////////////////////////////////////////////////////////////////////////
-    @RequestMapping( value = "/simpleformservice/api/get_encounters/{encounter_type}")
+    @RequestMapping( value = "/simpleformservice/api/get_encounters/{request_data}")
     @ResponseBody
-    public Object getAllRemindersforPatient(@PathVariable( "encounter_type" ) String encounter_type)
+    public Object getAllEncountersForPatient(@PathVariable( "request_data" ) String request_data)
     {
+        
+        //System.out.println("Getting all encounters for patient request w/ data " + request_data);
         // define the patient as the current user
         Person person = Context.getAuthenticatedUser().getPerson();		
         Patient patient = Context.getPatientService().getPatient(person.getId());
+        
+        // parse request data 
+        String[] split = request_data.split(":");
+        String encounter_type = split[0]; // encounter type is always first
+        //System.out.println("Split len = " + split.length);
+        Patient target_patient = null;
+        if(split.length > 1){ // if target patient is defined, use it, otherwise default to self
+            Person target_person = Context.getPersonService().getPerson(Integer.parseInt(split[1]));
+            target_patient = Context.getPatientService().getPatient(target_person.getId());
+            Boolean user_has_access = Context.getService(DataAccessPermissionService.class).doesPermissionExistFor(target_person, person, encounter_type, "read");
+            if(user_has_access == false){
+                String errorString = "Current person (" + person + ") does not have permission to access the data of the target person (" + target_person + ")";
+                System.out.println("   `-> (x) error retreiving concept: " + errorString);
+                return "ERROR: " + errorString; // sends this data to client
+            }
+        } else {
+            target_patient = patient;
+        }
+        //System.out.println("Grabbing encounters for patient " + target_patient);
         
         // get this encounter_type object from identifier
         EncounterType encounterType = findOrCreateEncounterTypeByIdentifier(encounter_type);
@@ -70,7 +92,7 @@ public class DataApiController {
         // get encounters by encounter_type
         List<EncounterType> encounterTypes = Arrays.asList(encounterType);
         EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder()
-				.setPatient(patient)
+				.setPatient(target_patient)
 				.setEncounterTypes(encounterTypes)
 				.createEncounterSearchCriteria();
         EncounterService encounterService = Context.getEncounterService();
@@ -84,6 +106,9 @@ public class DataApiController {
             
             // get encounter id 
             an_encounter_data.put("id", this_encounter.getEncounterId());
+            
+            // get person id 
+            an_encounter_data.put("person_id", this_encounter.getPatient().getPerson().getId());
             
             // get encounter datetime
             Date encounterDateTime = this_encounter.getEncounterDatetime();

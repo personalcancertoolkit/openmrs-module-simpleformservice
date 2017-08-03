@@ -38,4 +38,8 @@ public interface DataAccessPermissionService extends OpenmrsService {
     
     @Transactional(readOnly = true)
     DataAccessPermission getDataAccessPermission(Person accessToPerson, Person grantedToPerson, String encounterType, String permissionType);
+    
+    
+    @Transactional(readOnly = true)
+    Boolean doesPermissionExistFor(Person accessToPerson, Person grantedToPerson, String encounterType, String permissionType);
 }

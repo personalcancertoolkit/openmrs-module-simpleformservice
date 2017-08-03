@@ -39,17 +39,15 @@ simpleformservice.simple_permission_manager = {
         var promise_to_attempt = new Promise((resolve, reject)=>{
                 console.log("Sending data to server");
                 console.log(permission_data);
-                return new Promise((resolve, reject)=>{
-                    // send the data to the server and resolve on the response
-                    jq.post("/openmrs/ws/simpleformservice/api/give_data_access", {
-                        json : JSON.stringify(permission_data),
-                    }, function (response){
-                        console.log("Request Responded");
-                        console.log(response);
-                        resolve(response);  
-                    });
-                })
-            });
+                // send the data to the server and resolve on the response
+                jq.post("/openmrs/ws/simpleformservice/api/give_data_access", {
+                    json : JSON.stringify(permission_data),
+                }, function (response){
+                    console.log("Request Responded");
+                    console.log(response);
+                    resolve(response);  
+                });
+            })
         var promise_to_respond_to_attempt = promise_to_attempt
             .then((server_response)=>{
                 on_success_function(server_response);
@@ -60,28 +58,31 @@ simpleformservice.simple_permission_manager = {
             })
     },
     
-    retreive_data_access : function(){
-        if(typeof on_success_function === "undefined") on_success_function = function(){location.reload()}
+    retreive_data_access : function(permission_data, on_success_function, on_error_message){
+        if(typeof on_success_function === "undefined") on_success_function = function(permissions){ return permissions }
         if(typeof on_error_message === "undefined") on_error_message = "Sorry, there has been some retreiving your permissions.";
         
+        var encounter_type = (typeof permission_data === "undefined")? "" : permission_data.encounter_type;
+        var request_url = "/openmrs/ws/simpleformservice/api/retrieve_data_access/" + encounter_type;
+        
         var promise_to_attempt = new Promise((resolve, reject)=>{
-                console.log("Grabbing data from server");
-                return new Promise((resolve, reject)=>{
-                    // send the data to the server and resolve on the response
-                    jq.get("/openmrs/ws/simpleformservice/api/retrieve_data_access/", {}, function (response){
-                        console.log("Request Responded");
-                        console.log(response);
-                        resolve(response);  
-                    });
-                })
+                console.log("Retreiving permission data from server");
+                // send the data to the server and resolve on the response
+                jq.get(request_url, {}, function (response){
+                    console.log("Request Responded");
+                    console.log(response);
+                    resolve(response);  
+                });
             });
         var promise_to_respond_to_attempt = promise_to_attempt
             .then((server_response)=>{
-                on_success_function(server_response);
+                console.log("promise_to_respond_to_attempt's then is being triggered")
+                return on_success_function(server_response);
             })
             .catch((errors)=>{
                 console.log(errors);
                 alert(on_error_message);
             })
+        return promise_to_respond_to_attempt;
     },
 }

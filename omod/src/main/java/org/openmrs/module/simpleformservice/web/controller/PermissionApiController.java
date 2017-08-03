@@ -42,16 +42,59 @@ public class PermissionApiController {
     ////////////////////////////////////////////////////////////////////////////
     // Get dataAccessPermissions for current user as grantedToPerson
     ////////////////////////////////////////////////////////////////////////////
-    @RequestMapping( value = "/simpleformservice/api/retrieve_data_access/")
+    
+    
+    @RequestMapping( value = "/simpleformservice/api/retrieve_data_access/{encounter_type}")
     @ResponseBody
-    public Object getAllRemindersforPatient()
+    public Object getAllAccessPermissionsForUserWithEncounterType(@PathVariable( "encounter_type" ) String encounter_type)
     {
+        System.out.println("Retreiving data access permissions w/ encounter type " + encounter_type);
         // define the patient as the current user
         Person person = Context.getAuthenticatedUser().getPerson();		
         
         // get all permissions with this person as the grantedToPerson
         List<DataAccessPermission> dataAccessPermissions = Context.getService(DataAccessPermissionService.class).getDataAccessPermissionByGrantedToPerson(person);
         System.out.println(dataAccessPermissions);
+        if(dataAccessPermissions == null || dataAccessPermissions.size() == 0) return new ArrayList<Object>(); // if its empty, return empty array here.
+        
+        // remove all permissions where encounter_type is not the requested type
+        List<DataAccessPermission> correctDataAccessPermissions = new ArrayList<DataAccessPermission>();
+        for (DataAccessPermission this_permission : dataAccessPermissions) {
+            if(this_permission.getEncounterType().equals(encounter_type)) correctDataAccessPermissions.add(this_permission);
+        }
+        
+        // convert permissions into a returnable format
+        List<Object> access_data = convertAccessPermissionsToReturnableObjectMaps(correctDataAccessPermissions);
+        
+        //System.out.println(encounters_data);
+        return access_data;
+        
+    }
+        
+    
+    
+    @RequestMapping( value = "/simpleformservice/api/retrieve_data_access/")
+    @ResponseBody
+    public Object getAllAccessPermissionsForUser()
+    {
+        System.out.println("Retreiving all data access permissions");
+        
+        // define the patient as the current user
+        Person person = Context.getAuthenticatedUser().getPerson();		
+        
+        // get all permissions with this person as the grantedToPerson
+        List<DataAccessPermission> dataAccessPermissions = Context.getService(DataAccessPermissionService.class).getDataAccessPermissionByGrantedToPerson(person);
+        System.out.println(dataAccessPermissions);
+        
+        // convert permissions into a returnable format
+        List<Object> access_data = convertAccessPermissionsToReturnableObjectMaps(dataAccessPermissions);
+        
+        //System.out.println(encounters_data);
+        return access_data;
+    }
+    
+    
+    public List<Object> convertAccessPermissionsToReturnableObjectMaps(List<DataAccessPermission> dataAccessPermissions){
         
         // for each permission, create a "map" containing  accessToPerson, accessToPersonName, encounter_type, and permission_type,
         List<Object> access_data = new ArrayList<Object>();
@@ -76,10 +119,8 @@ public class PermissionApiController {
             }        
         }
         
-        //System.out.println(encounters_data);
         return access_data;
     }
-    
     
     
     //////////////////////////////////////////////////////////////////////////

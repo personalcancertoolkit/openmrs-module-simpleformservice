@@ -54,7 +54,21 @@ public class DataAccessPermissionServiceImpl extends BaseOpenmrsService implemen
     
     @Override
     public DataAccessPermission getDataAccessPermission(Person accessToPerson, Person grantedToPerson, String encounterType, String permissionType){
+       // System.out.println("Looking up object in db w/ accessTo:"+ accessToPerson + ", grantedToPerson:"+grantedToPerson+", encounterType:"+encounterType+", and permissionType:"+permissionType);
         return dao.getDataAccessPermission(accessToPerson, grantedToPerson, encounterType, permissionType);
+    }
+    
+    @Override
+    public Boolean doesPermissionExistFor(Person accessToPerson, Person grantedToPerson, String encounterType, String permissionType){
+        //System.out.println("Checking for the permission");
+        DataAccessPermission thePermission = getDataAccessPermission(accessToPerson, grantedToPerson, encounterType, permissionType);
+        //System.out.println("The permission =");
+        //System.out.println(thePermission);
+        if(thePermission == null){
+            return false;
+        } else {
+            return true;
+        }
     }
   
 }

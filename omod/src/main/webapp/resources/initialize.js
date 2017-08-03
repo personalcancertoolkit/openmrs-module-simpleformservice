@@ -14,9 +14,11 @@ var simpleformservice = {
     
     promise : {
         simple_permission_manager : null,    // used to promise simple_permission_manager loaded
+        encounter_retreiver : null,
         submission_handler : null,           // used to promise submission_handler loaded
         manager_of_answer_handlers : null,   // "" manager_of_answer_handlers ""
         simple_submission : null,            // "" simple_submission ""
+        loaded : null, // utility function, promises all to be loaded. 
     }
 }
 
@@ -33,6 +35,19 @@ simpleformservice.answer_handlers = { // note, the relative paths get replaced w
 // promise to load simple_permission_manager 
 simpleformservice.promise.simple_permission_manager = new Promise((resolve, reject)=>{
     var script_url = simpleformservice.resource_root + "/permissions/simple_permission_manager.js";
+    var script = document.createElement('script');
+    script.setAttribute("src", script_url);
+    script.onload = function(){
+        resolve("success");
+    };
+    document.getElementsByTagName('head')[0].appendChild(script);
+})
+
+
+
+// promise to load encounter_retreiver 
+simpleformservice.promise.encounter_retreiver = new Promise((resolve, reject)=>{
+    var script_url = simpleformservice.resource_root + "/retreival/encounter_retreiver.js";
     var script = document.createElement('script');
     script.setAttribute("src", script_url);
     script.onload = function(){
@@ -86,3 +101,5 @@ simpleformservice.promise.simple_submission =
             document.getElementsByTagName('head')[0].appendChild(script);
         })
     });
+
+simpleformservice.promise.loaded = Promise.all([simpleformservice.promise.simple_permission_manager, simpleformservice.promise.encounter_retreiver, simpleformservice.promise.simple_submission])

@@ -1,12 +1,14 @@
 simpleformservice.encounter_retreiver = {
-    promise_encounters_for_encounter_type : function(encounter_type){
+    // simpleformservice.encounter_retreiver.promise_encounters_for_encounter_type(encounter_type, person_id)
+    promise_encounters_for_encounter_type : function(encounter_type, person_id){
         return new Promise((resolve, reject)=>{
-            //Load all possible guidelines that user can choose to create a new reminder from
-            jq.get('/openmrs/ws/simpleformservice/api/get_encounters/'+ encounter_type, function (response) {
-                // console.log(reminderData);
+            var get_string = encounter_type;
+            if(typeof person_id !== "undefined") get_string += ":" + person_id;
+            jq.get('/openmrs/ws/simpleformservice/api/get_encounters/'+ get_string, function (response) {
+                console.log("encounters returned: ");
                 console.log(response);
                 resolve(response);
-            });
-        })
+            }); 
+        });
     }
 }
