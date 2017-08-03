@@ -62,7 +62,7 @@ public class DataApiController {
     public Object getAllEncountersForPatient(@PathVariable( "request_data" ) String request_data)
     {
         
-        //System.out.println("Getting all encounters for patient request w/ data " + request_data);
+        System.out.println("Getting all encounters for patient request w/ data " + request_data);
         // define the patient as the current user
         Person person = Context.getAuthenticatedUser().getPerson();		
         Patient patient = Context.getPatientService().getPatient(person.getId());
@@ -74,17 +74,24 @@ public class DataApiController {
         Patient target_patient = null;
         if(split.length > 1){ // if target patient is defined, use it, otherwise default to self
             Person target_person = Context.getPersonService().getPerson(Integer.parseInt(split[1]));
+            System.out.println(target_person);
             target_patient = Context.getPatientService().getPatient(target_person.getId());
+            System.out.println(target_patient);
             Boolean user_has_access = Context.getService(DataAccessPermissionService.class).doesPermissionExistFor(target_person, person, encounter_type, "read");
             if(user_has_access == false){
                 String errorString = "Current person (" + person + ") does not have permission to access the data of the target person (" + target_person + ")";
-                System.out.println("   `-> (x) error retreiving concept: " + errorString);
+                System.out.println("   `-> (x) error retreiving data: " + errorString);
+                return "ERROR: " + errorString; // sends this data to client
+            }
+            if(target_patient == null){
+                String errorString = "Sorry, current person (" + person + ") is not a patient and we can not query for their encounters.";
+                System.out.println("   `-> (x) error retreiving data: " + errorString);
                 return "ERROR: " + errorString; // sends this data to client
             }
         } else {
             target_patient = patient;
         }
-        //System.out.println("Grabbing encounters for patient " + target_patient);
+        System.out.println("Grabbing encounters for patient " + target_patient);
         
         // get this encounter_type object from identifier
         EncounterType encounterType = findOrCreateEncounterTypeByIdentifier(encounter_type);
