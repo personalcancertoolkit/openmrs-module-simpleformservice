@@ -32,11 +32,6 @@
 	
 	
 	<!-- Adds link to admin page -->
-	<extension>
-		<point>org.openmrs.admin.list</point>
-		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList</class>
-	</extension>
-
 	<privilege>
 		<name>App: simpleformservice</name>
 		<description>Access Simple Form Service app</description>
