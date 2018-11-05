@@ -63,12 +63,11 @@
 
 
 	<!-- Maps hibernate file's, if present -->
-	<mappingFiles>
-		SecurityLayer.hbm.xml
-		DataAccessPermission.hbm.xml
-	</mappingFiles>
+	 <mappingFiles>
+    DataAccessPermission.hbm.xml
+</mappingFiles>
 
-	<!-- Internationalization -->
+<!-- Internationalization -->
 	<!-- All message codes should start with ${project.parent.artifactId}. -->
 	<messages>
 		<lang>en</lang>
